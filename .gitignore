@@ -15,14 +15,25 @@ coverage
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
+.tmp
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
+dist
 
 # Dependency directory
 # Commenting this out is preferred by some people, see
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
 node_modules
 
-# Users Environment Variables
-.lock-wscript
+# SASS directory used to generate CSS
+.sass-cache
+
+# Editor settings
+.idea
+
+public
+client/bower_components
+
+# Local settings
+/server/config/local.env.js
