@@ -2,6 +2,12 @@
     margin: 20px 0;
 }
 
+.thing-container {
+    .close {
+        color: $brand-danger;
+    }
+}
+
 #banner {
     border-bottom: none;
     margin-top: -20px;
@@ -19,7 +25,7 @@
     color: #F5F5F5;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #4393B9;
+    background: $jumbotron-bg;//#4393B9;
 }
 
 .footer {
