@@ -1,9 +1,9 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 $fa-font-path: "/bower_components/font-awesome/fonts";
 
-@import 'bootswatch-scss/darkly/variables';
+@import 'bootswatch-scss/flatly/variables';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap';
-@import 'bootswatch-scss/darkly/bootswatch';
+@import 'bootswatch-scss/flatly/bootswatch';
 @import 'font-awesome/scss/font-awesome';
 
 /**
@@ -23,4 +23,5 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'admin/admin.scss';
 @import 'main/main.scss';
 @import 'modal/modal.scss';
+@import 'navbar/navbar.scss';
 // endinjector
