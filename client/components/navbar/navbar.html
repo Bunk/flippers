@@ -23,7 +23,7 @@
         <li ng-show="isLoggedIn()">
             <div dropdown>
                 <span class="avatar">
-                    <img gravatar-src="'{{ getCurrentUser().email }}'" gravatar-size="45" gravatar-default="retro" />
+                    <img gravatar-src="getCurrentUser().email" gravatar-size="128" gravatar-default="retro" />
                 </span>
                 <a id="menuLabelUser" href="#" dropdown-toggle aria-haspopup="true" role="button" aria-expanded="false">
                     <div class="avatar-email">
