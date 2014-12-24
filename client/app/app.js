@@ -1,32 +1,43 @@
 'use strict';
 
 angular.module('flippersApp', [
-        'ngCookies',
-        'ngResource',
-        'ngSanitize',
-        'btford.socket-io',
-        'ui.router',
-        'ui.bootstrap',
-        'ui.gravatar'
-    ])
-    .config(function($stateProvider, $urlRouterProvider, $locationProvider,
-        $httpProvider) {
-        $urlRouterProvider
-            .otherwise('/');
+    'ngCookies',
+    'ngResource',
+    'ngSanitize',
+    'btford.socket-io',
+    'restangular',
+    'ui.router',
+    'ui.bootstrap',
+    'ui.gravatar',
+    'toggle-switch'
+])
 
-        $locationProvider.html5Mode(true);
-        $httpProvider.interceptors.push('authInterceptor');
-    })
+.config(function($stateProvider, $urlRouterProvider, $locationProvider,
+    $httpProvider, RestangularProvider) {
+    $urlRouterProvider
+        .otherwise('/');
+
+    $locationProvider.html5Mode(true);
+
+    $httpProvider.interceptors.push('authInterceptor');
+
+    RestangularProvider.setBaseUrl('/api');
+    RestangularProvider.setRestangularFields({
+        id: '_id'
+    });
+})
 
 .factory('authInterceptor', function($rootScope, $q, $cookieStore, $location) {
     return {
         // Add authorization token to headers
         request: function(config) {
             config.headers = config.headers || {};
-            if ($cookieStore.get('token')) {
-                config.headers.Authorization = 'Bearer ' +
-                    $cookieStore.get('token');
+
+            var token = $cookieStore.get('token');
+            if (token) {
+                config.headers.Authorization = 'Bearer ' + token;
             }
+
             return config;
         },
 

@@ -2,12 +2,10 @@
 
 <header class="hero-unit" id="banner">
   <div class="container">
-      <div class="row">
-          <h1>Flippers
-              <img src="assets/images/dolphin-flip-upright.png" alt="I'm the Toggle Flipper!">
-          </h1>
-          <small class="lead">The simple feature flipping service</small>
-      </div>
+    <div class="row">
+      <h1>Flippers <img src="assets/images/dolphin-flip-upright.png" alt="I'm the Toggle Flipper!"></h1>
+      <small class="lead">The simple feature flipping service</small>
+    </div>
   </div>
 </header>
 
@@ -16,7 +14,12 @@
     <div class="col-lg-12 thing-container">
       <h1 class="page-header">Features:</h1>
       <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-        <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
+        <li>
+            <a href="#" tooltip="{{thing.info}}">
+                {{thing.name}}
+                <button type="button" class="close" ng-click="deleteThing(thing)">&times;</button>
+            </a>
+        </li>
       </ul>
     </div>
   </div>

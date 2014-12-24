@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('flippersApp')
-  .config(function ($stateProvider) {
-    $stateProvider
-      .state('admin', {
-        url: '/admin',
-        templateUrl: 'app/admin/admin.html',
-        controller: 'AdminCtrl'
-      });
-  });
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('admin', {
+                url: '/admin',
+                templateUrl: 'app/admin/admin.html',
+                controller: 'AdminCtrl'
+            });
+    });

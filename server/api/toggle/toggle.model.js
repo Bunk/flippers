@@ -4,9 +4,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ToggleSchema = new Schema({
-  name: String,
-  info: String,
-  active: Boolean
+    type: String,
+    key: String,
+    description: String,
+    enabled: Boolean
 });
 
 module.exports = mongoose.model('Toggle', ToggleSchema);
