@@ -7,12 +7,16 @@ angular.module('flippersApp')
             'link': '/'
         }, {
             'title': 'Features',
-            'link': '/features'
+            'link': '/features',
+            'shown': Auth.isViewer
+        }, {
+            'title': 'Admin',
+            'link': '/admin',
+            'shown': Auth.isAdmin
         }];
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
-        $scope.isAdmin = Auth.isAdmin;
         $scope.getCurrentUser = Auth.getCurrentUser;
 
         $scope.logout = function() {

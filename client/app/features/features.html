@@ -1,6 +1,6 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<section class="container">
+<div class="container">
     <div class="row">
         <alert ng-show="showHelp" type="info" close="closeHelp()">
             <div class="panel-body">
@@ -14,7 +14,7 @@
             </div>
         </alert>
     </div>
-</section>
+</div>
 
 <section class="features container">
     <div class="row">
@@ -26,22 +26,24 @@
                         <th class='key'>Key</th>
                         <th class='desc'>Description</th>
                         <th class='status'></th>
-                        <th></th>
+                        <th class='delete' ng-show="{{editingEnabled()}}"></th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="toggle in toggles" ng-controller="ToggleCtrl">
+                <tbody ng-repeat="toggle in toggles" ng-controller="ToggleItemCtrl">
                     <tr>
                         <td class='type'><span class="label label-info">{{toggle.type}}</span></td>
                         <td class='key'>{{toggle.key}}</td>
                         <td class='desc'>{{toggle.description}}</td>
                         <td class='status'>
-                            <toggle-switch class="switch-success switch-small"
-                                model="toggle.enabled" html="true"
+                            <toggle-switch class="switch-success switch-small" html="true"
+                                model="toggle.enabled"
+                                ng-disabled="{{!editingEnabled()}}"
                                 on-label="<i class='fa fa-check'></i>"
                                 off-label="<i class='fa fa-remove'></i>" />
                         </td>
-                        <td>
-                            <button type="button" class="close" ng-click="deleteToggle(toggle)">&times;</button>
+                        <td class='delete' ng-show="{{editingEnabled()}}">
+                            <button type="button" class="close"
+                                ng-click="deleteToggle(toggle)">&times;</button>
                         </td>
                     </tr>
                 </tbody>

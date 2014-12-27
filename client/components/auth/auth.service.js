@@ -140,6 +140,16 @@ angular.module('flippersApp')
             },
 
             /**
+             * Check if a user is a viewer
+             *
+             * @return {Boolean}
+             */
+            isViewer: function() {
+                return currentUser.role === 'viewer' ||
+                    currentUser.role === 'admin';
+            },
+
+            /**
              * Get auth token
              */
             getToken: function() {
