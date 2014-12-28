@@ -5,9 +5,9 @@
 
 'use strict';
 
-var Thing = require('../api/thing/thing.model');
-var User = require('../api/user/user.model');
-var Toggle = require('../api/toggle/toggle.model');
+var Thing = require('../../api/thing/thing.model');
+var User = require('../../api/user/user.model');
+var Toggle = require('../../api/toggle/toggle.model');
 
 Thing.find({}).remove(function() {
     Thing.create({
@@ -43,6 +43,23 @@ User.find({}).remove(function() {
         name: 'Admin',
         email: 'admin@admin.com',
         password: 'admin'
+    }, {
+        provider: 'google',
+        role: 'viewer',
+        name: 'JD Courtoy',
+        email: 'jd.courtoy@gmail.com',
+        google: {
+            id: '109861284236841833919',
+            locale: 'en',
+            gender: 'male',
+            picture: 'https://lh6.googleusercontent.com/-kz-P2gDI8GA/AAAAAAAAAAI/AAAAAAAABr4/NkTegryLbQc/photo.jpg',
+            link: 'https://plus.google.com/+JDCourtoy',
+            family_name: 'Courtoy',
+            given_name: 'JD',
+            name: 'JD Courtoy',
+            email: 'jd.courtoy@gmail.com',
+            verified_email: true
+        }
     }, function() {
         console.log('finished populating users');
     });
