@@ -5,7 +5,9 @@ angular.module('flippersApp')
         $cookieStore, $q) {
         var currentUser = {};
         if ($cookieStore.get('token')) {
-            currentUser = User.get();
+            User.current(function(me) {
+                currentUser = me;
+            });
         }
 
         return {
@@ -27,9 +29,13 @@ angular.module('flippersApp')
                 }).
                 success(function(data) {
                     $cookieStore.put('token', data.token);
-                    currentUser = User.get();
-                    deferred.resolve(data);
-                    return cb();
+                    User.current(function(me) {
+                        currentUser = me;
+
+                        deferred.resolve(data);
+
+                        return cb();
+                    });
                 }).
                 error(function(err) {
                     this.logout();
@@ -57,19 +63,20 @@ angular.module('flippersApp')
              * @param  {Function} callback - optional
              * @return {Promise}
              */
-            createUser: function(user, callback) {
-                var cb = callback || angular.noop;
+            createUser: function(user) {
+                return User.post(user)
 
-                return User.save(user,
-                    function(data) {
-                        $cookieStore.put('token', data.token);
-                        currentUser = User.get();
-                        return cb(user);
-                    },
-                    function(err) {
-                        this.logout();
-                        return cb(err);
-                    }.bind(this)).$promise;
+                .then(function success(data) {
+                    $cookieStore.put('token', data.token);
+                    User.current(function(me) {
+                        currentUser = me;
+                    });
+                })
+
+                .catch(function(err) {
+                    this.logout();
+                    throw err;
+                }.bind(this));
             },
 
             /**

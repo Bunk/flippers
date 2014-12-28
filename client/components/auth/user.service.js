@@ -1,21 +1,14 @@
 'use strict';
 
 angular.module('flippersApp')
-    .factory('User', function($resource) {
-        return $resource('/api/users/:id/:controller', {
-            id: '@_id'
-        }, {
-            changePassword: {
-                method: 'PUT',
-                params: {
-                    controller: 'password'
-                }
-            },
-            get: {
-                method: 'GET',
-                params: {
-                    id: 'me'
-                }
-            }
-        });
-    });
+
+.factory('User', function(Restangular) {
+    var users = Restangular.service('users');
+
+    users.current = function(callback, error) {
+        return Restangular.one('users', 'me').get()
+            .then(callback, error);
+    };
+
+    return users;
+});

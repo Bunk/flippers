@@ -12,10 +12,9 @@ angular.module('flippersApp', [
     'toggle-switch'
 ])
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider,
-    $httpProvider, RestangularProvider) {
-    $urlRouterProvider
-        .otherwise('/');
+.config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, RestangularProvider) {
+
+    $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
 
