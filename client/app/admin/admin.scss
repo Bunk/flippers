@@ -1,1 +1,85 @@
 .trash { color:rgb(209, 91, 71); }
+
+.table>thead>tr>th,
+.table>thead>tr>td,
+.table>tbody>tr>th,
+.table>tbody>tr>td,
+.table>tfoot>tr>th,
+.table>tfoot>tr>td {
+    border-top: 1px solid $gray-lighter;
+}
+
+.table>thead>tr:first-of-type>td,
+.table>tbody>tr:first-of-type>td,
+.table>tfoot>tr:first-of-type>td {
+    border-top: none;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+table.editable-list {
+    .icon-cell {
+        width: 32px;
+    }
+
+    tr>td {
+        vertical-align: middle;
+    }
+
+    .editable-item-action-cell {
+        width: 32px;
+
+        .btn {
+            padding: 2px 6px 3px;
+        }
+    }
+
+    .role {
+        width: 150px;
+    }
+
+    tr.item-added td, tr.item-deleted td {
+        color: $gray-light;
+
+        .remove-item {
+            color: $gray-light;
+        }
+    }
+
+    tr.item-deleted td {
+        text-decoration: line-through !important;
+    }
+
+    td .form-group {
+        position: relative;
+        margin: 0;
+        padding: 0;
+    }
+
+    td .form-control {
+        height: 34px;
+        padding: 6px 12px;
+        box-shadow: inset 0 1px 2px rgba(203, 203, 210, .4);
+        padding-left: 8px;
+        padding-right: 8px;
+        border-width: 1px;
+    }
+
+    td .form-control:focus {
+        box-shadow: inset 0 1px 2px rgba(203, 203, 210, 0.2),0 0 4px rgba(121, 88, 159, 0.3);
+    }
+}
+
+.table-header {
+    padding: 12px 10px;
+}
+
+.gravatar-icon {
+    border-radius: 50%;
+}
+
+.remove-item {
+    color: $brand-danger;
+}

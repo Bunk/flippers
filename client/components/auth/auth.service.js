@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('flippersApp')
-    .factory('Auth', function Auth($location, $rootScope, $http, User,
-        $cookieStore, $q) {
+    .factory('Auth', function Auth($q, $cookieStore, $location, $rootScope, $http, User) {
         var currentUser = {};
         if ($cookieStore.get('token')) {
             User.current(function(me) {

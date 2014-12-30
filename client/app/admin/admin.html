@@ -1,12 +1,58 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container">
-  <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
-  <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in users">
-        <strong>{{user.name}}</strong><br>
-        <span class="text-muted">{{user.email}}</span>
-        <a ng-click="delete(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
-    </li>
-  </ul>
-</div>
+<section class="container">
+    <div class="row table-header">
+        <h5 class="pull-left">Users</h5>
+        <div class="pull-right">
+            <button ng-show="!editing" ng-click="edit()" class="btn btn-sm btn-default edit-button">Edit</button>
+            <button ng-show="editing" ng-click="cancel()" class="btn btn-sm btn-link cancel-edit-button">Cancel</button>
+            <button ng-show="editing" ng-click="save()" class="btn btn-sm btn-primary save-edit-button">Save</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <form>
+            <table class="table editable-list">
+                <tbody>
+                    <tr ng-repeat="user in users" ng-class="{'item-added': !user.persistent, 'item-deleted': user.deleted, 'item-persistent': user.persistent}">
+                        <td class="avatar icon-cell">
+                            <img class="gravatar-icon" gravatar-src="user.email" gravatar-size="64" gravatar-default="mm" height="32px" width="32px" />
+                        </td>
+                        <td class="email">
+                            <span ng-show="!canModify(user)">{{user.email}}</span>
+                            <div class="form-group" ng-show="canModify(user)">
+                                <input  ng-model="user.email" type="text" class="form-control" placeholder="user@domain.com" />
+                            </div>
+                        </td>
+                        <td class="role">
+                            <span ng-show="!canModify(user)">{{user.role}}</span>
+                            <select ng-options="role as role for role in roles" ng-model="user.role" ng-show="canModify(user)" class="form-control"></select>
+                        </td>
+                        <td class="editable-item-action-cell text-right" ng-show="editing">
+                            <button class="btn btn-link remove-item" ng-click="delete(user)" ng-show="canDelete(user)">
+                                <i ng-class="{'fa-minus-circle': user.persistent, 'fa-undo': !user.persistent || user.deleted}" class="fa"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr ng-show="editing" class="item-added item-new">
+                        <td class="avatar icon-cell">
+                            <img class="gravatar-icon" gravatar-src="newUser.email" gravatar-size="64" gravatar-default="mm" height="32px" width="32px" />
+                        </td>
+                        <td class="email">
+                            <div class="form-group">
+                                <input ng-model="newUser.email" class="form-control new-email" placeholder="user@domain.com" type="text" />
+                            </div>
+                        </td>
+                        <td class="role">
+                            <select class="form-control" ng-options="role as role for role in roles" ng-model="newUser.role"></select>
+                        </td>
+                        <td class="editable-item-action-cell text-right">
+                            <button ng-click="add(newUser)" class="btn btn-link add-item"><i class="fa fa-plus-circle"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+</section>

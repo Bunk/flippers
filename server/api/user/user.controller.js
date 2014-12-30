@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
@@ -36,6 +37,26 @@ exports.create = function(req, res, next) {
         });
         res.json({
             token: token
+        });
+    });
+};
+
+exports.update = function(req, res, next) {
+    // remove any values that shouldn't be updated
+    if (req.body._id) delete req.body._id;
+    if (req.body.salt) delete req.body.salt;
+    if (req.body.hashedPassword) delete req.body.hashedPassword;
+
+    User.findById(req.params.id, function(err, toggle) {
+        if (err) return handleError(res, err);
+
+        if (!toggle) return res.send(404);
+
+        var updated = _.merge(toggle, req.body);
+        updated.save(function(err) {
+            if (err) return handleError(res, err);
+
+            return res.json(200, toggle);
         });
     });
 };
