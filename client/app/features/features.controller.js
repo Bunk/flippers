@@ -2,9 +2,9 @@
 
 angular.module('flippersApp')
 
-.controller('FeaturesCtrl', function($scope, $http, Auth, togglesApi) {
+.controller('FeaturesCtrl', function($scope, $http, Auth, Help, togglesApi) {
     $scope.toggles = [];
-    $scope.showHelp = true;
+    $scope.showHelp = Help.showHelp('toggles');
     $scope.editingEnabled = function() {
         return Auth.isAdmin();
     };
@@ -14,6 +14,7 @@ angular.module('flippersApp')
     });
 
     $scope.closeHelp = function() {
+        Help.hideHelp('toggles');
         $scope.showHelp = false;
     };
 
