@@ -50,39 +50,31 @@ angular.module('flippersApp')
         function asyncSave(users) {
             var deferred = $q.defer();
 
-            setTimeout(function() {
-                var promises = [],
-                    total = users.length;
+            var promises = [],
+                total = users.length;
 
-                _.each(users, function(user, index) {
-                    deferred.notify(index / total);
+            _.each(users, function(user, index) {
+                deferred.notify(index / total);
 
-                    if (!user.persistent) {
-                        // CREATE invitation to register
-                        // User.invite(user);
-                    } else if (user.deleted) {
-                        // DELETE
-                        promises.push(user.remove());
-                    } else {
-                        var original = _.find(loaded, function(loadedUser) {
-                            return user._id === loadedUser._id;
-                        });
+                if (!user.persistent) {
+                    // CREATE invitation to register
+                    // User.invite(user);
+                } else if (user.deleted) {
+                    // DELETE
+                    promises.push(user.remove());
+                } else {
+                    var original = _.find(loaded, function(loadedUser) {
+                        return user._id === loadedUser._id;
+                    });
 
-                        // Only update when the original values are different than the current values
-                        if (original && !equal(user, original)) {
-                            promises.push(user.put());
-                        }
+                    // Only update when the original values are different than the current values
+                    if (original && !equal(user, original)) {
+                        promises.push(user.put());
                     }
-                });
+                }
+            });
 
-                $q.all(promises).then(function() {
-                    deferred.resolve();
-                }).catch(function(err) {
-                    deferred.reject(err);
-                });
-            }, 0);
-
-            return deferred.promise;
+            return $q.all(promises);
         };
 
         $scope.edit = function() {
@@ -130,7 +122,6 @@ angular.module('flippersApp')
         };
 
         $scope.add = function(user) {
-            //user.added = true;
             $scope.users.push(user);
             $scope.newUser = {};
         };
