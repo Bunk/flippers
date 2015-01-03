@@ -12,9 +12,6 @@ angular.module('flippersApp')
         var loaded = [];
         var deleted = [];
 
-        // Initial loading of users
-        reload();
-
         function reload() {
             return User.getList()
 
@@ -24,6 +21,8 @@ angular.module('flippersApp')
             })
 
             .catch(function(err) {
+                console.log(err);
+
                 loaded = [];
                 resetWith(loaded);
             });
@@ -37,7 +36,7 @@ angular.module('flippersApp')
                 user.persistent = true;
                 $scope.users.push(user);
             });
-        };
+        }
 
         function equal(lhs, rhs) {
             return _.isEqual(lhs, rhs, function(a, b) {
@@ -45,7 +44,7 @@ angular.module('flippersApp')
                     a.email === b.email &&
                     a.role === b.role;
             });
-        };
+        }
 
         function asyncSave(users) {
             var deferred = $q.defer();
@@ -75,7 +74,10 @@ angular.module('flippersApp')
             });
 
             return $q.all(promises);
-        };
+        }
+
+        // Initial loading of users
+        reload();
 
         $scope.edit = function() {
             $scope.editing = true;

@@ -2,20 +2,22 @@
 
 angular.module('flippersApp')
 
-.controller('FeaturesCtrl', function($scope, $http, Auth, Help, togglesApi) {
-    $scope.toggles = [];
-    $scope.showHelp = Help.showHelp('toggles');
-    $scope.editingEnabled = function() {
-        return Auth.isAdmin();
-    };
+.controller('FeaturesCtrl', function($scope, $http, $log, Auth, Help, togglesApi) {
 
     togglesApi.getList().then(function(toggles) {
         $scope.toggles = toggles;
     });
 
+    $scope.toggles = [];
+
+    $scope.showHelp = Help.shouldShow('toggles');
+
+    $scope.editingEnabled = function() {
+        return Auth.isAdmin();
+    };
+
     $scope.closeHelp = function() {
-        Help.hideHelp('toggles');
-        $scope.showHelp = false;
+        $scope.showHelp = Help.shouldShow('toggles', false);
     };
 
     $scope.addToggle = function() {
@@ -38,12 +40,12 @@ angular.module('flippersApp')
             var idx = $scope.toggles.indexOf(toggle);
             $scope.toggles.splice(idx, 1);
         }, function error(err) {
-            alert(err.status + ' - ' + err.statusText);
+            $log.error(err);
         });
     };
 })
 
-.controller('ToggleItemCtrl', function($scope, $http, Restangular) {
+.controller('ToggleItemCtrl', function($scope) {
 
     var skipToggleWatch = false;
     $scope.$watch('toggle.enabled', function(newValue, oldValue) {

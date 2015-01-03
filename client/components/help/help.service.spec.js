@@ -13,12 +13,12 @@ describe('Service: Help', function() {
     }));
 
     it('should default to showing help', function() {
-        expect(Help.showHelp('test')).toBe(true);
+        expect(Help.shouldShow('test')).toBe(true);
     });
 
     it('should be able to disable viewing of help', function() {
-        Help.hideHelp('test');
-        expect(Help.showHelp('test')).toBe(false);
+        Help.shouldShow('test', false);
+        expect(Help.shouldShow('test')).toBe(false);
     });
 
 });
