@@ -10,7 +10,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
  * App-wide Styles
  */
 
- html,body {
+ html,body,#viewpane {
      height: 100%;
  }
 
@@ -27,7 +27,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 }
 
 .gradient-primary {
-    background-color: #3b2f63;
+    background-color: $brand-primary;
     background-image:
         radial-gradient(at 0 bottom,desaturate(lighten($brand-success, 10%), 10%) 0,rgba(0,72,160,0) 60%),
         radial-gradient(at 90% bottom,lighten($brand-success, 10%) 0,rgba(0,63,140,0) 40%),
