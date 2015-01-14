@@ -11,25 +11,59 @@ var UserSchema = new Schema({
     name: String,
     email: {
         type: String,
-        lowercase: true
+        lowercase: true,
+        index: true
     },
     role: {
         type: String,
         default: 'user'
     },
-    avatar: String,
+    provider: {
+        type: String,
+        default: 'local'
+    },
+    verification: {
+        verified: {
+            type: Boolean,
+            default: false
+        },
+        token: String,
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        modifiedAt: Date
+    },
     hashedPassword: String,
-    provider: String,
     salt: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    modifiedAt: Date,
     facebook: {},
     twitter: {},
     google: {},
     github: {}
 });
 
+var validatePresenceOf = function(value) {
+    return value && value.length;
+};
+
+var isOAuth = function(user) {
+    return authTypes.indexOf(user.provider) !== -1;
+}
+
+var shouldValidatePassword = function(user) {
+    return user.verification.verified && !isOAuth(user);
+};
+
 /**
  * Virtuals
  */
+
+// Clear password (stored encrypted and salted)
 UserSchema
     .virtual('password')
     .set(function(password) {
@@ -69,7 +103,8 @@ UserSchema
 UserSchema
     .path('email')
     .validate(function(email) {
-        if (authTypes.indexOf(this.provider) !== -1) return true;
+        if (isOAuth(this)) return true;
+
         return email.length;
     }, 'Email cannot be blank');
 
@@ -77,11 +112,13 @@ UserSchema
 UserSchema
     .path('hashedPassword')
     .validate(function(hashedPassword) {
-        if (authTypes.indexOf(this.provider) !== -1) return true;
+        if (!shouldValidatePassword(this)) return true;
+
         return hashedPassword.length;
     }, 'Password cannot be blank');
 
 // Validate email is not taken
+// TODO: Prevent plus addressing
 UserSchema
     .path('email')
     .validate(function(value, respond) {
@@ -90,31 +127,36 @@ UserSchema
             email: value
         }, function(err, user) {
             if (err) throw err;
+
             if (user) {
                 if (self.id === user.id) return respond(true);
                 return respond(false);
             }
+
             respond(true);
         });
     }, 'The specified email address is already in use.');
-
-var validatePresenceOf = function(value) {
-    return value && value.length;
-};
 
 /**
  * Pre-save hook
  */
 UserSchema
     .pre('save', function(next) {
-        if (!this.isNew) return next();
-
-        if (!validatePresenceOf(this.hashedPassword) &&
-            authTypes.indexOf(this.provider) === -1) {
-            next(new Error('Invalid password'));
-        } else {
-            next();
+        if (!this.isNew) {
+            this.modifiedAt = Date.now();
+            return next();
         }
+
+        if (shouldValidatePassword(this) && !validatePresenceOf(this.hashedPassword)) {
+            next(new Error('Invalid password'));
+        }
+
+        if (!isOAuth(this) && !this.verified) {
+            this.verification.token = this.makeToken();
+            this.verification.createdAt = Date.now();
+        }
+
+        next();
     });
 
 /**
@@ -132,6 +174,19 @@ UserSchema.methods = {
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
 
+    verify: function(token) {
+        var valid = token && token !== '' && this.verification.token && this.verification.token === token;
+        if (!valid) {
+            return false;
+        }
+
+        this.verification.verified = true;
+        this.verification.token = '';
+        this.verification.modifiedAt = Date.now();
+
+        return true;
+    },
+
     /**
      * Make salt
      *
@@ -139,6 +194,10 @@ UserSchema.methods = {
      * @api public
      */
     makeSalt: function() {
+        return crypto.randomBytes(16).toString('base64');
+    },
+
+    makeToken: function() {
         return crypto.randomBytes(16).toString('base64');
     },
 
@@ -153,8 +212,7 @@ UserSchema.methods = {
         if (!password || !this.salt) return '';
 
         var salt = new Buffer(this.salt, 'base64');
-        return crypto.pbkdf2Sync(password, salt, 10000, 64)
-            .toString('base64');
+        return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
     }
 };
 

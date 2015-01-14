@@ -7,13 +7,29 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
+// All users
 router.get('/', auth.hasRole('admin'), controller.index);
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.get('/me', auth.isAuthenticated(), controller.me);
+
+// Single user
 router.get('/:id', auth.isAuthenticated(), controller.show);
+
+// Update user
 router.put('/:id', auth.hasRole('admin'), controller.update);
 router.patch('/:id', auth.hasRole('admin'), controller.update);
-router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
+
+// Create user
 router.post('/', controller.create);
+
+// Delete user
+router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+
+// Change Password
+router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
+
+// Current user
+router.get('/me', auth.isAuthenticated(), controller.me);
+
+// Valid invitation
+router.get('/invite/:id/:token', controller.invited);
 
 module.exports = router;

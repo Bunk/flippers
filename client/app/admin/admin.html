@@ -28,7 +28,7 @@
                             <span ng-show="!canModify(user)">{{user.role}}</span>
                             <select ng-options="role as role for role in roles" ng-model="user.role" ng-show="canModify(user)" class="form-control"></select>
                         </td>
-                        <td class="editable-item-action-cell text-right" ng-show="editing">
+                        <td ng-show="editing" class="editable-item-action-cell text-right">
                             <button class="btn btn-link remove-item" ng-click="delete(user)" ng-show="canDelete(user)">
                                 <i ng-class="{'fa-minus-circle': user.persistent, 'fa-undo': !user.persistent || user.deleted}" class="fa"></i>
                             </button>

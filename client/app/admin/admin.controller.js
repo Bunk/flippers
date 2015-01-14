@@ -47,14 +47,9 @@ angular.module('flippersApp')
         }
 
         function asyncSave(users) {
-            var deferred = $q.defer();
+            var promises = [];
 
-            var promises = [],
-                total = users.length;
-
-            _.each(users, function(user, index) {
-                deferred.notify(index / total);
-
+            _.each(users, function(user) {
                 if (!user.persistent) {
                     // CREATE invitation to register
                     // User.invite(user);

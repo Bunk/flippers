@@ -1,4 +1,47 @@
-<div ng-include="'components/navbar/navbar.html'"></div>
+<div id="signup" class="gradient-primary">
+    <div class="container">
+        <header>
+            <h1 class="logo">
+                <a href="/" title="Flippers">
+                    Flippers <img src="assets/images/dolphin-flip-upright-w.png">
+                </a>
+            </h1>
+            <h2>Sign up for free and take us for a spin today!</h2>
+            <hr />
+        </header>
+
+        <p class="alert error" id="fill-all-fields" style="display: none;">Please fill in all the fields.</p>
+
+        <div class="row">
+            <div class="benefits col-sm-6">
+                <h3>Free account</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias ratione, eius quaerat ut nihil, ab nesciunt incidunt quisquam!</p>
+                <h3>Simple premise</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit sunt ipsa repellendus deserunt ab. Cumque beatae accusamus expedita laborum aliquam molestiae itaque nihil aliquid sit quod. Cumque, quod officiis obcaecati.</p>
+                <h3>Advanced features</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos provident quas earum in tenetur odit qui veritatis a, laborum aperiam quia autem alias illum id inventore, quod, consequuntur animi cupiditate.</p>
+            </div>
+            <div class="signup col-sm-6">
+                <form name="form" role="form" ng-submit="register(form)">
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" class="text required form-control input-lg" id="email">
+                    </div>
+                    <div class="form-group last">
+                        <button type="submit" class="form-control input-lg">Create Free Account</button>
+                    </div>
+                    <p class="tos">
+                        Signing up signifies that you have read and agree to the
+                        <a href="policy/tos">Terms of Service</a> and
+                        <a href="policy/privacy">Privacy Policy</a>.
+                    </p>
+                </form>
+                <h5 class="login">
+                    Already have an account?  <a href="/login" class="btn btn-primary">Sign in</a>
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
   <div class="row">

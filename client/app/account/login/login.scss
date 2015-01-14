@@ -31,22 +31,6 @@ $btnGithubBackgroundHighlight:      #ccc;
 
 #login {
 
-    h1.logo {
-        text-align: center;
-        margin: 0 0 40px;
-
-        a {
-            font-family: 'Helvetica Neue',helvetica,arial,sans-serif;
-            color: white;
-            text-decoration: none;
-
-            img {
-                height: 50px;
-                width: 50px;
-            }
-        }
-    }
-
     .container {
         position: relative;
         height: 100%;
@@ -67,5 +51,9 @@ $btnGithubBackgroundHighlight:      #ccc;
         max-width: 430px;
         margin: 0 auto 20px;
         border-radius: 8px;
+
+        h3 {
+            color: $text-color;
+        }
     }
 }

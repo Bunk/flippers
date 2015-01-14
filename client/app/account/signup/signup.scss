@@ -1,0 +1,44 @@
+#signup {
+    header {
+        text-align: center;
+    }
+
+    .container {
+        position: relative;
+        height: 100%;
+        padding-top: 60px;
+    }
+
+    .benefits {
+        h3 {
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: $gray-light;
+            font-size: 1.4rem;
+            margin-bottom: 4rem;
+        }
+    }
+
+    .signup {
+        color: $gray-lighter;
+
+        .tos {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .login {
+            font-size: 1.6rem;
+            margin: 3rem auto 0 auto;
+            text-align: center;
+        }
+    }
+
+    form {
+        input.input-lg {
+            height: 46px;
+        }
+    }
+}
