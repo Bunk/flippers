@@ -1,3 +1,13 @@
+/**
+ * Using Rails-like standard naming convention for endpoints.
+ * GET     /api/users              ->  index
+ * POST    /api/users              ->  create
+ * GET     /api/users/:id          ->  show
+ * PUT     /api/users/:id          ->  update
+ * PATCH   /api/users/:id          ->  update
+ * DELETE  /api/users/:id          ->  destroy
+ */
+
 'use strict';
 
 var _ = require('lodash');
@@ -6,7 +16,7 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 
-var protectedQuery = '-salt -hashedPassword -verificationToken';
+var protectedQuery = '-salt -hashedPassword';
 var jwtExpires = {
     expiresInMinutes: 60 * 5
 };
@@ -26,24 +36,47 @@ exports.index = function(req, res) {
     });
 };
 
-exports.invited = function(req, res) {
+exports.accepting = function(req, res, next) {
     var userId = req.params.id;
     var token = req.params.token;
 
     User.findById(userId, protectedQuery, function(err, user) {
         if (err) {
-            return handleError(res, err);
+            return next(err);
+        }
+
+        if (!user || user.verification.token !== token) {
+            return res.send(404);
         }
 
         return res.send(200);
+    });
+};
 
-        if (!user) {
+exports.accept = function(req, res, next) {
+    var userId = req.params.id;
+    var token = req.params.token;
+
+    User.findOne({
+        _id: userId
+    }, protectedQuery, function(err, user) {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user || user.verification.token !== token) {
             return res.send(404);
         }
 
-        if (user && user.verification.token === token) {
-            return res.send(404);
-        }
+        var pass = String(req.body.password);
+        user.password = pass;
+        user.verification.verified = true;
+        user.verification.token = '';
+
+        user.save(function(err, saved) {
+            if (err) return validationError(res, err);
+            res.send(200);
+        });
     });
 };
 
@@ -57,42 +90,14 @@ exports.invite = function(req, res) {
     });
 
     newUser.save(function(err, user) {
-        if (err) {
-            return validationError(res, err);
-        }
+        if (err) return validationError(res, err);
 
-        var token = jwt.sign({
-            _id: user._id
-        }, config.secrets.session, jwtExpires);
+        // TODO: Send email
 
         res.json({
-            token: token
-        });
-    });
-};
-
-exports.verify = function(req, res, next) {
-    // TODO: Mark the user as verified via the token returned from invite
-    var userId = req.params.id;
-    var token = req.body.token;
-
-    User.findById(userId, protectedQuery, function(err, user) {
-        console.log(err);
-        console.log(user);
-        if (err) {
-            console.log(err);
-            return next(err);
-        }
-
-        if (!user) {
-            return res.send(404);
-        }
-
-        if (!user.verify(req.body.token)) {
-            return res.send(404);
-        }
-
-        return res.json(user);
+            id: user.id,
+            token: user.verification.token
+        })
     });
 };
 

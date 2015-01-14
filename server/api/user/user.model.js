@@ -1,13 +1,17 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var crypto = require('crypto');
-
+var ShortId = require('mongoose-shortid');
 var Schema = mongoose.Schema;
+
+var crypto = require('crypto');
 
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
+    _id: {
+        type: ShortId
+    },
     name: String,
     email: {
         type: String,
@@ -56,7 +60,7 @@ var isOAuth = function(user) {
 }
 
 var shouldValidatePassword = function(user) {
-    return user.verification.verified && !isOAuth(user);
+    return !user.isNew && !isOAuth(user);
 };
 
 /**
@@ -118,7 +122,7 @@ UserSchema
     }, 'Password cannot be blank');
 
 // Validate email is not taken
-// TODO: Prevent plus addressing
+// TODO: Validate plus addressing as well.
 UserSchema
     .path('email')
     .validate(function(value, respond) {
@@ -128,8 +132,7 @@ UserSchema
         }, function(err, user) {
             if (err) throw err;
 
-            if (user) {
-                if (self.id === user.id) return respond(true);
+            if (user && self.id !== user.id) {
                 return respond(false);
             }
 
@@ -198,7 +201,7 @@ UserSchema.methods = {
     },
 
     makeToken: function() {
-        return crypto.randomBytes(16).toString('base64');
+        return mongoose.Types.ObjectId().toHexString();
     },
 
     /**
