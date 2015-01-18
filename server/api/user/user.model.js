@@ -26,25 +26,13 @@ var UserSchema = new Schema({
         type: String,
         default: 'local'
     },
-    verification: {
-        verified: {
-            type: Boolean,
-            default: false
-        },
-        token: String,
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        modifiedAt: Date
-    },
     hashedPassword: String,
     salt: String,
-    createdAt: {
+    created_at: {
         type: Date,
         default: Date.now
     },
-    modifiedAt: Date,
+    modified_at: Date,
     facebook: {},
     twitter: {},
     google: {},
@@ -60,7 +48,7 @@ var isOAuth = function(user) {
 }
 
 var shouldValidatePassword = function(user) {
-    return !user.isNew && !isOAuth(user);
+    return !isOAuth(user);
 };
 
 /**
@@ -146,20 +134,15 @@ UserSchema
 UserSchema
     .pre('save', function(next) {
         if (!this.isNew) {
-            this.modifiedAt = Date.now();
+            this.modified_at = Date.now();
             return next();
         }
 
         if (shouldValidatePassword(this) && !validatePresenceOf(this.hashedPassword)) {
-            next(new Error('Invalid password'));
+            return next(new Error('Invalid password'));
         }
 
-        if (!isOAuth(this) && !this.verified) {
-            this.verification.token = this.makeToken();
-            this.verification.createdAt = Date.now();
-        }
-
-        next();
+        return next();
     });
 
 /**
@@ -177,19 +160,6 @@ UserSchema.methods = {
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
 
-    verify: function(token) {
-        var valid = token && token !== '' && this.verification.token && this.verification.token === token;
-        if (!valid) {
-            return false;
-        }
-
-        this.verification.verified = true;
-        this.verification.token = '';
-        this.verification.modifiedAt = Date.now();
-
-        return true;
-    },
-
     /**
      * Make salt
      *
@@ -198,10 +168,6 @@ UserSchema.methods = {
      */
     makeSalt: function() {
         return crypto.randomBytes(16).toString('base64');
-    },
-
-    makeToken: function() {
-        return mongoose.Types.ObjectId().toHexString();
     },
 
     /**

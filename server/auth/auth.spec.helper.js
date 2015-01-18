@@ -5,6 +5,7 @@ var async = require('async');
 var supertest = require('supertest');
 
 var app = require('../app');
+var Api = require('../api/api.spec.helper');
 var User = require('../api/user/user.model');
 var agent = supertest.agent(app);
 

@@ -59,7 +59,7 @@ exports.hasRole = function(rolesRequired) {
             if (authorized) {
                 next();
             } else {
-                res.send(403);
+                res.sendStatus(403);
             }
         });
 }
