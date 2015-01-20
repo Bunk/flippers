@@ -1,6 +1,6 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose-q')(require('mongoose'));
 var ShortId = require('mongoose-shortid');
 var Schema = mongoose.Schema;
 

@@ -9,19 +9,25 @@ var User = require('../user/user.model');
 
 // Get list of invites
 exports.list = function(req, res) {
-    Invite.find(function(err, invites) {
-        if (err) return handleError(res, err);
-        return res.status(200).json(invites);
-    });
+    return Invite.findQ()
+        .then(function(invites) {
+            return res.status(200).json(invites);
+        })
+        .catch(function(err) {
+            return handleError(res, err);
+        });
 };
 
 // Get a single invite
 exports.show = function(req, res) {
-    Invite.findById(req.params.id, function(err, invite) {
-        if (err) return handleError(res, err);
-        if (!invite) return res.sendStatus(404);
-        return res.json(invite);
-    });
+    return Invite.findByIdQ(req.params.id)
+        .then(function(invite) {
+            if (!invite) return Status.notFound();
+            return res.json(invite);
+        })
+        .catch(function(err) {
+            return handleError(res, err);
+        });
 };
 
 // Creates a new invite in the DB.
@@ -30,19 +36,28 @@ exports.create = function(req, res) {
         email: req.body.email
     });
 
-    invite.save(function(err, saved) {
-        if (err) return handleValidation(res, err);
-        return res.status(201).json(invite);
-    });
+    return invite.saveQ()
+        .then(function(saved) {
+            return res.status(201).json(invite);
+        })
+        .catch(function(err) {
+            return handleError(res, err);
+        });
 };
 
 // Updates an existing invite in the DB.
 exports.accept = function(req, res) {
-    findInvite(req.params.id)
+    Invite.findByIdQ(req.params.id)
         .then(function(invite) {
             if (!invite) return Status.notFound();
-            return findUser(invite.email)
+
+            var query = {
+                email: invite.email
+            };
+            return User.findOneQ(query)
                 .then(function(user) {
+                    // Already a user created for the invite's email
+                    // Perhaps this was created out of band.
                     if (user) return Status.notFound();
                     return transformInvite(invite, req.body.password);
                 })
@@ -52,7 +67,7 @@ exports.accept = function(req, res) {
 
                     // Remove the invite before logging the user in
                     // in case there's an error.
-                    return remove(invite).then(function() {
+                    return invite.removeQ().then(function() {
                         // This return token can be used to log the user in.
                         res.status(200).json({
                             token: token
@@ -83,10 +98,10 @@ exports.accept = function(req, res) {
 
 // Deletes a invite from the DB.
 exports.destroy = function(req, res) {
-    findInvite(req.params.id)
+    Invite.findByIdQ(req.params.id)
         .then(function(invite) {
             if (!invite) return Status.notFound();
-            return remove(invite);
+            return invite.removeQ();
         })
         .then(function() {
             res.sendStatus(204);
@@ -96,14 +111,6 @@ exports.destroy = function(req, res) {
         })
         .done();
 };
-
-function findInvite(id) {
-    return Q.ninvoke(Invite, 'findById', id);
-}
-
-function remove(invite) {
-    return Q.ninvoke(invite, 'remove');
-}
 
 function handleValidation(res, err) {
     return res.status(422).json(err);
