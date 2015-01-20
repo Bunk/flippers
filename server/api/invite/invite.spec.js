@@ -1,6 +1,5 @@
 'use strict';
 
-var Q = require('q');
 var should = require('should');
 var app = require('../../app');
 var request = require('supertest');
@@ -20,27 +19,18 @@ describe('Invites API', function() {
         });
     });
 
-    beforeEach(function(done) {
-        createInvite('invite@email.com')
+    beforeEach(function() {
+        return createInvite('invite@email.com')
             .then(function(created) {
-                invite = created[0];
-                done();
-            })
-            .catch(function(err) {
-                done(err);
-            })
-            .done();
+                invite = created;
+            });
     });
 
-    afterEach(function(done) {
-        Api.clearSchema(Invite)
-            .then(function() {
-                done();
-            })
+    afterEach(function() {
+        return Api.clearSchema(Invite)
             .catch(function(err) {
                 console.error('cleared err: ' + err);
-            })
-            .done();
+            });
     });
 
     after(function(done) {
@@ -129,7 +119,7 @@ describe('Invites API', function() {
                 password: '1234!@#$'
             };
 
-            return Api.createUser(userFixture)
+            return User.createQ(userFixture)
                 .then(function(created) {
                     // Manually create the user in the test after the invite has
                     // already been created
@@ -165,7 +155,9 @@ describe('Invites API', function() {
                     // There should be an auth token for the new user.
                     should.exist(res.body.token);
 
-                    return Api.findUser(invite.email);
+                    return User.findOneQ({
+                        email: invite.email
+                    });
                 })
                 .then(function(user) {
                     // A new user should be created for the invite.
@@ -173,7 +165,7 @@ describe('Invites API', function() {
 
                     // Remove this user manually since we aren't removing all users
                     // for each test interation.
-                    return Api.remove(user);
+                    return user.removeQ();
                 });
         });
     });
@@ -205,7 +197,7 @@ describe('Invites API', function() {
                     .set('authorization', 'Bearer ' + users['admin'].token)
                     .expect(204))
                 .then(function() {
-                    return findInvite(invite.id);
+                    return Invite.findByIdQ(invite.id);
                 })
                 .then(function(invite) {
                     should.not.exist(invite);
@@ -218,9 +210,5 @@ function createInvite(email) {
     var invite = new Invite({
         email: email
     });
-    return Q.ninvoke(invite, 'save');
-}
-
-function findInvite(id) {
-    return Q.ninvoke(Invite, 'findById', id);
+    return invite.saveQ();
 }

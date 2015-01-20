@@ -1,9 +1,7 @@
 'use strict';
 
-var _ = require('lodash');
-var Q = require('q');
-var Auth = require('../../auth/auth.service');
 var Status = require('../api.statusCodes');
+var Auth = require('../../auth/auth.service');
 var Invite = require('./invite.model');
 var User = require('../user/user.model');
 
@@ -86,13 +84,7 @@ exports.accept = function(req, res) {
             password: password
         });
 
-        return Q.ninvoke(user, 'save');
-    }
-
-    function findUser(email) {
-        return Q.ninvoke(User, 'findOne', {
-            email: email
-        });
+        return user.saveQ();
     }
 };
 
